@@ -1,18 +1,18 @@
 <template>
-  <div id="app">
+  <div id="app" class="app">
 
     <div class="header">
       <h1>Banco UN</h1>
       <nav>
         <button v-on:click="init" v-if="is_auth" > Inicio </button>
         <button v-on:click="getBalance" v-if="is_auth" > Saldo </button>
-        <button v-if="is_auth" > Transacción </button>
-        <button v-if="is_auth" >Cerrar Sesión</button>
+        <button v-on="goTransaction" > Transacción </button>
+        <button v-on="logOut" >Cerrar Sesión</button>
       </nav>
     </div>
     
     <div class="main-component">
-      <router-view></router-view>
+      <router-view v-on:log-in="logIn"></router-view>
     </div>
 
     <div class="footer">
@@ -23,6 +23,7 @@
 </template>
 
 <script>
+import vueRouter from 'vue-router'
 export default {
   name: 'App',
 
@@ -49,15 +50,46 @@ export default {
           })
       }
     },
+    updateAuth: function(){
+      var self = this
+      self.is_auth = localStorage.getItem('isAuth') || false
+      if(self.is_auth == false)
+        self.$router.push({name: "user_auth"})
+      else{
+        let username = localStorage.getItem("current_username")
+        self.$router.push({name: "user", params:{ username: username }})
+      }
+    },
+    logIn: function(username){
+      localStorage.setItem('current_username', username)
+      localStorage.setItem('isAuth', true)
+      this.updateAuth()
+    },
+    logOut: function(){
+      localStorage.removeItem('isAuth')
+      localStorage.removeItem('current_username')
+      this.updateAuth()
+    },
+    doTransaction: function(){
+      let username = localStorage.getItem("current_username")
+      this.$router.push({name: "user_transaction",
+      params:{ username: username }})
+    }
   },
 
+  created: function(){
+    this.$router.push({name: "root"})
+    this.updateAuth()
+  }
+
+/*
   beforeCreate: function(){
     localStorage.setItem('current_username', 'camilo24')
     localStorage.setItem('isAuth', true)
 
     this.$router.push({name:"user",params:{username:'camilo24'}})
   }
-
+*/
 }
 </script>
 
