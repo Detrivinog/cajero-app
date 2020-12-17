@@ -36,29 +36,15 @@ export default {
   },
 
   methods: {
-    init: function(){
-      if(this.$route.name != "user"){
-        let username = localStorage.getItem("current_username")
-        this.$router.push({name: "user", params:{username:username}})
-      }
-    },
-    getBalance: function(){
-      if(this.$route.name != "user_balance"){
-        let username = localStorage.getItem("current_username")
-        this.$router.push({ name:"user_balance",
-          params:{username:username}
-          })
-      }
-    },
     updateAuth: function(){
       var self = this
-      self.is_auth = localStorage.getItem('isAuth') || false
+      self.is_auth  = localStorage.getItem('isAuth') || false
       if(self.is_auth == false)
         self.$router.push({name: "user_auth"})
       else{
         let username = localStorage.getItem("current_username")
         self.$router.push({name: "user", params:{ username: username }})
-      }
+      }  
     },
     logIn: function(username){
       localStorage.setItem('current_username', username)
@@ -70,11 +56,24 @@ export default {
       localStorage.removeItem('current_username')
       this.updateAuth()
     },
+    init: function(){
+      if(this.$route.name != "user"){
+        let username = localStorage.getItem("current_username")
+        this.$router.push({name: "user", params:{ username: username }})
+      }
+      
+    },
+    getBalance: function(){
+      if(this.$route.name != "user_balance"){
+        let username = localStorage.getItem("current_username")
+        this.$router.push({name: "user_balance", params:{ username: username }})
+      }
+    },
     doTransaction: function(){
-      let username = localStorage.getItem("current_username")
-      this.$router.push({name: "user_transaction",
-      params:{ username: username }})
+        let username = localStorage.getItem("current_username")
+        this.$router.push({name: "user_transaction", params:{ username: username }})
     }
+    
   },
 
   created: function(){
@@ -82,14 +81,6 @@ export default {
     this.updateAuth()
   }
 
-/*
-  beforeCreate: function(){
-    localStorage.setItem('current_username', 'camilo24')
-    localStorage.setItem('isAuth', true)
-
-    this.$router.push({name:"user",params:{username:'camilo24'}})
-  }
-*/
 }
 </script>
 
